@@ -1,0 +1,18 @@
+{
+    "name": "zaim-extra",
+    "version": "1.0.0",
+    "description": "Allow to record expenses of external services not supported by Zaim.",
+    "main": "index.js",
+    "scripts": {
+        "build": "tsc",
+        "deploy": "npm run build && cp src/appsscript.json dist/ && clasp push",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "@types/google-apps-script": "^1.0.99",
+        "typescript": "^5.9.2"
+    }
+}
