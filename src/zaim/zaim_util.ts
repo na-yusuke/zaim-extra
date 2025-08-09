@@ -41,7 +41,7 @@ function getCategoryAndGenre(shopName: string, categoryList: CategoryListRespons
 /**
  * Get Rakuten Pay ID from the list of payment types
  * @param accountList 
- * @returns Rakuten Pay ID
+ * @returns Account ID
  */
 function getAccountId(accountList: AccountListResponse, targetName: string): string | null {
   try {

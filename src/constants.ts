@@ -1,3 +1,5 @@
+const GMAIL_SEARCH_CRITERIA = "from:no-reply@pay.rakuten.co.jp subject:楽天ペイアプリご利用内容確認メール is:unread ";
+
 const API_ENDPOINTS = {
   ACCESS_TOKEN: 'https://api.zaim.net/v2/auth/access',
   ACCOUNT: 'https://api.zaim.net/v2/home/account',
@@ -7,10 +9,6 @@ const API_ENDPOINTS = {
   PAYMENT: 'https://api.zaim.net/v2/home/money/payment',
   REQUEST_TOKEN: 'https://api.zaim.net/v2/auth/request',
 };
-
-const OAUTH_SERVICE_NAME = 'Zaim';
-
-const GMAIL_SEARCH_CRITERIA = "from:no-reply@pay.rakuten.co.jp subject:楽天ペイアプリご利用内容確認メール is:unread ";
 
 const SHOP_CATEGORIES = {
   foodLunch: ['ソニーシティ大崎　食堂'],

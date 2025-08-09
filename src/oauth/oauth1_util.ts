@@ -15,9 +15,9 @@ function getServiceOauth1_(): any {
     }
 
     return (OAuth1 as any).createService('Zaim')
-      .setAccessTokenUrl('https://api.zaim.net/v2/auth/access')
-      .setRequestTokenUrl('https://api.zaim.net/v2/auth/request')
-      .setAuthorizationUrl('https://auth.zaim.net/users/auth')
+      .setAccessTokenUrl(API_ENDPOINTS.ACCESS_TOKEN)
+      .setRequestTokenUrl(API_ENDPOINTS.REQUEST_TOKEN)
+      .setAuthorizationUrl(API_ENDPOINTS.AUTHORIZATION)
       .setConsumerKey(clientId)
       .setConsumerSecret(clientSecret)
       .setCallbackFunction('authCallback')

@@ -19,13 +19,13 @@ function processRakutenPayEmails(): void {
   const categoryList = zaimApi.getCategoryList();
   const genreList = zaimApi.getGenreList();
   const accountList = zaimApi.getAccountList();
-  const rakutenPayId = getAccountId(accountList, '楽天Pay');
+  const rakutenPayId = getAccountId(accountList, ACCOUNT_NAMES.RAKUTEN_PAY);
 
   if (!rakutenPayId) {
     throw new Error('Rakuten Pay account not found');
   }
 
-  eachMessage("from:no-reply@pay.rakuten.co.jp subject:楽天ペイアプリご利用内容確認メール is:unread ", (message: GoogleAppsScript.Gmail.GmailMessage) => {
+  eachMessage(GMAIL_SEARCH_CRITERIA, (message: GoogleAppsScript.Gmail.GmailMessage) => {
     processEmailMessage(message, categoryList, genreList, rakutenPayId, zaimApi);
   });
 }
