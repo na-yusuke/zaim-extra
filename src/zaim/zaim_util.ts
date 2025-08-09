@@ -1,21 +1,18 @@
-const FOOD_LUNCH_SHOPS = ['ソニーシティ大崎　食堂'];
-const ENTERTAINMENT_MUSIC_SHOPS = ['山野楽器　ロックイン川崎', 'サウンドスタジオ八泉'];
-const GROCERIES_SHOPS = ['自販機サントリービバレッジ'];
-const CONVENIENCE_STORES = ['ファミリーマート', 'セブン-イレブン', 'デイリーヤマザキ', 'ローソン', 'ＮｅｗＤａｙｓ'];
-
-function getCategoryAndGenre(shopName: string, categoryList: any, genreList: any): [string, string] {
+/**
+ * TODO: This logic is very inefficient, so improve it.
+         Create a combined store, category, and genre form from existing records.
+ */
+function getCategoryAndGenre(shopName: string, categoryList: CategoryListResponse, genreList: GenreListResponse): [string, string] {
   try {
-    // 特定店舗を振り分ける
-    if (FOOD_LUNCH_SHOPS.indexOf(shopName) !== -1) {
+    if (SHOP_CATEGORIES.foodLunch.indexOf(shopName) !== -1) {
       return ['101', '10104'];
-    } else if (ENTERTAINMENT_MUSIC_SHOPS.indexOf(shopName) !== -1) {
+    } else if (SHOP_CATEGORIES.entertainmentMusic.indexOf(shopName) !== -1) {
       return ['108', '10804'];
-    } else if (GROCERIES_SHOPS.indexOf(shopName) !== -1) {
+    } else if (SHOP_CATEGORIES.groceries.indexOf(shopName) !== -1) {
       return ['101', '10101'];
     } else {
-      // コンビニを食料品に振り分ける
-      for (let i = 0; i < CONVENIENCE_STORES.length; i++) {
-        const store = CONVENIENCE_STORES[i];
+      for (let i = 0; i < SHOP_CATEGORIES.convenienceStore.length; i++) {
+        const store = SHOP_CATEGORIES.convenienceStore[i];
         if (shopName && store && shopName.indexOf(store) === 0) {
           return ['101', '10101'];
         }
@@ -26,35 +23,40 @@ function getCategoryAndGenre(shopName: string, categoryList: any, genreList: any
     if (!categoryList || !categoryList.categories || !genreList || !genreList.genres) {
       throw new Error('Category or genre list is invalid');
     }
-    
+
     const otherCategory = categoryList.categories[categoryList.categories.length - 1];
     const otherGenre = genreList.genres[genreList.genres.length - 1];
-    
+
     if (!otherCategory || !otherCategory.id || !otherGenre || !otherGenre.id) {
       throw new Error('Other category/genre ID not found');
     }
-    
-    return [otherCategory.id, otherGenre.id];
+
+    return [otherCategory.id.toString(), otherGenre.id.toString()];
   } catch (error) {
     console.error('Category/genre determination error:', error);
     throw error;
   }
 }
 
-function getRakutenPayId(accountList: any): string | null {
+/**
+ * Get Rakuten Pay ID from the list of payment types
+ * @param accountList 
+ * @returns Rakuten Pay ID
+ */
+function getAccountId(accountList: AccountListResponse, targetName: string): string | null {
   try {
     if (!accountList || !accountList.accounts) {
       throw new Error('Account list is invalid');
     }
-    
+
     for (let i = 0; i < accountList.accounts.length; i++) {
       const account = accountList.accounts[i];
-      if (account.name === '楽天Pay') {
-        return account.id;
+      if (account && account.name === targetName) {
+        return account.id.toString();
       }
     }
-    
-    console.warn('Rakuten Pay account not found');
+
+    console.warn(`${targetName} is not found`);
     return null;
   } catch (error) {
     console.error('Rakuten Pay ID fetch error:', error);

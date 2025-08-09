@@ -1,11 +1,11 @@
 const API_ENDPOINTS = {
   ACCESS_TOKEN: 'https://api.zaim.net/v2/auth/access',
-  REQUEST_TOKEN: 'https://api.zaim.net/v2/auth/request',
+  ACCOUNT: 'https://api.zaim.net/v2/home/account',
   AUTHORIZATION: 'https://auth.zaim.net/users/auth',
   CATEGORY: 'https://api.zaim.net/v2/home/category',
   GENRE: 'https://api.zaim.net/v2/home/genre',
-  ACCOUNT: 'https://api.zaim.net/v2/home/account',
-  PAYMENT: 'https://api.zaim.net/v2/home/money/payment'
+  PAYMENT: 'https://api.zaim.net/v2/home/money/payment',
+  REQUEST_TOKEN: 'https://api.zaim.net/v2/auth/request',
 };
 
 const OAUTH_SERVICE_NAME = 'Zaim';

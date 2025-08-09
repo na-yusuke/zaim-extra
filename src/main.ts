@@ -10,35 +10,38 @@ function main(): void {
 
 function initializeApplication(): void {
   registerZaimApiKey();
-  doZaimAuth();
+  const zaimApi = new ZaimApi();
+  zaimApi.doZaimAuth();
 }
 
 function processRakutenPayEmails(): void {
-  const categoryList = getCategoryList();
-  const genreList = getGenreList();
-  const accountList = getAccountList();
-  const rakutenPayId = getRakutenPayId(accountList);
+  const zaimApi = new ZaimApi();
+  const categoryList = zaimApi.getCategoryList();
+  const genreList = zaimApi.getGenreList();
+  const accountList = zaimApi.getAccountList();
+  const rakutenPayId = getAccountId(accountList, '楽天Pay');
 
   if (!rakutenPayId) {
     throw new Error('Rakuten Pay account not found');
   }
 
   eachMessage("from:no-reply@pay.rakuten.co.jp subject:楽天ペイアプリご利用内容確認メール is:unread ", (message: GoogleAppsScript.Gmail.GmailMessage) => {
-    processEmailMessage(message, categoryList, genreList, rakutenPayId);
+    processEmailMessage(message, categoryList, genreList, rakutenPayId, zaimApi);
   });
 }
 
 function processEmailMessage(
   message: GoogleAppsScript.Gmail.GmailMessage,
-  categoryList: any,
-  genreList: any,
-  rakutenPayId: string
+  categoryList: CategoryListResponse,
+  genreList: GenreListResponse,
+  rakutenPayId: string,
+  zaimApi: ZaimApi
 ): void {
   try {
     const emailData = parseEmailContent(message);
     const [categoryId, genreId] = getCategoryAndGenre(emailData.shopName, categoryList, genreList);
 
-    const result = callPostPaymentApi(
+    const result = zaimApi.postPayment(
       categoryId,
       genreId,
       emailData.amount,
@@ -53,7 +56,7 @@ function processEmailMessage(
   }
 }
 
-function parseEmailContent(message: GoogleAppsScript.Gmail.GmailMessage): any {
+function parseEmailContent(message: GoogleAppsScript.Gmail.GmailMessage): ParsedEmailData {
   const body = message.getBody();
   const normalizedText = body.replace(/\r\n|\r|\n/g, ' ');
 
