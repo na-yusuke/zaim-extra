@@ -113,7 +113,7 @@ interface ShopCategories {
   convenienceStore: string[];
 }
 
-interface ParsedEmailData {
+interface PurchaseRecord {
   date: string;
   shopName: string;
   amount: string;

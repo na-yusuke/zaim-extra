@@ -5,7 +5,7 @@
     "main": "index.js",
     "scripts": {
         "build": "tsc",
-        "deploy": "npm run build && cp src/appsscript.json dist/ && clasp push",
+        "deploy": "rm -rf dist && npm run build && cp src/appsscript.json dist/ && clasp push",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
     "keywords": [],

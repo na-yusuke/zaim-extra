@@ -45,8 +45,8 @@ class ZaimApi {
     amount: string,
     date: string,
     fromAccountId?: string,
-    comment?: string,
     name?: string,
+    comment?: string,
     place?: string,
   ): PaymentApiResponse {
     const parameters: PaymentApiParams = {

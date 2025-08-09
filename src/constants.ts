@@ -26,19 +26,3 @@ const DEFAULT_CATEGORIES = {
 const ACCOUNT_NAMES = {
   RAKUTEN_PAY: '楽天Pay'
 };
-
-const REGEX_PATTERNS = {
-  DATE: /ご利用日時.*/,
-  SHOP_NAME: /ご利用店舗.*/,
-  TOTAL_SETTLEMENT: /決済総額.*/,
-  HTML_TABLE_CELL: /<td(?: .+?)?>.*?<\/td>/g,
-  HTML_TAGS: /(<([^>]+)>)/gi,
-  YEN_SYMBOL: /&yen;/gi,
-  COMMA: /,/gi,
-  WHITESPACE: / /gi
-};
-
-const PROPERTY_KEYS = {
-  CLIENT_ID: 'ClientId',
-  CLIENT_SECRET: 'ClientSecret'
-};
