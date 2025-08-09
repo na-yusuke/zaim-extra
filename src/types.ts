@@ -51,9 +51,9 @@ interface PaymentApiParams {
   amount: string;
   date: string;
   from_account_id?: string | undefined;
+  place?: string | undefined;
   comment?: string | undefined;
   name?: string | undefined;
-  place?: string | undefined;
 }
 
 interface PaymentApiResponse {

@@ -45,9 +45,9 @@ class ZaimApi {
     amount: string,
     date: string,
     fromAccountId?: string,
-    name?: string,
-    comment?: string,
     place?: string,
+    comment?: string,
+    name?: string,
   ): PaymentApiResponse {
     const parameters: PaymentApiParams = {
       mapping: 1,
@@ -56,9 +56,9 @@ class ZaimApi {
       amount: amount,
       date: date,
       from_account_id: fromAccountId,
-      comment: comment,
+      place: place,
+      comment: comment || '',
       name: name,
-      place: place
     };
 
     const response = this._callApi(API_ENDPOINTS.PAYMENT, 'post', parameters);
