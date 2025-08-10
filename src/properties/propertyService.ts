@@ -3,6 +3,8 @@
  * https://developers.google.com/apps-script/reference/properties?hl=ja
  */
 
+// TODO: class化する
+
 // Manage Properties Service instance globally for efficiency
 const SCRIPT_PROPERTIES = PropertiesService.getScriptProperties();
 

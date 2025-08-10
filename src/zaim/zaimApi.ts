@@ -10,33 +10,47 @@ class ZaimApi {
    * after clicking the authentication button, access the callback url directly from the <div class="callback"> element in the page source as the screen does not transition.
    * if you try to access the url by copying it, it will be rejected, so “access the url directly from the developer tools” is recommended.
    */
-  doZaimAuth(): void {
+  doZaimAuth(): { success: boolean; authUrl?: string; error?: string } {
     try {
       if (!this.serviceOauth.hasAccess()) {
         const authorizationUrl = this.serviceOauth.authorize();
         console.log('Open the following URL, authenticate with Zaim, and then run the script again:\n%s', authorizationUrl);
+        return { success: true, authUrl: authorizationUrl };
       } else {
         console.log('Already authenticated');
+        return { success: true };
       }
     } catch (error) {
       console.error('Zaim authentication error:', error);
-      throw error;
+      return { success: false, error: error instanceof Error ? error.message : 'Unknown authentication error' };
     }
   }
 
-  getCategoryList(): CategoryListResponse {
+  getCategoryList(): CategoryListResponse | null {
     const response = this._callApi(API_ENDPOINTS.CATEGORY, 'get');
-    return response;
+    if (!response.success) {
+      console.warn('Failed to get category list:', response.error);
+      return null;
+    }
+    return response.data;
   }
 
-  getGenreList(): GenreListResponse {
+  getGenreList(): GenreListResponse | null {
     const response = this._callApi(API_ENDPOINTS.GENRE, 'get');
-    return response;
+    if (!response.success) {
+      console.warn('Failed to get genre list:', response.error);
+      return null;
+    }
+    return response.data;
   }
 
-  getAccountList(): AccountListResponse {
+  getAccountList(): AccountListResponse | null {
     const response = this._callApi(API_ENDPOINTS.ACCOUNT, 'get');
-    return response;
+    if (!response.success) {
+      console.warn('Failed to get account list:', response.error);
+      return null;
+    }
+    return response.data;
   }
 
   postPayment(
@@ -48,7 +62,7 @@ class ZaimApi {
     place?: string,
     comment?: string,
     name?: string,
-  ): PaymentApiResponse {
+  ): PaymentApiResponse | null {
     const parameters: PaymentApiParams = {
       mapping: 1,
       category_id: categoryId,
@@ -62,19 +76,30 @@ class ZaimApi {
     };
 
     const response = this._callApi(API_ENDPOINTS.PAYMENT, 'post', parameters);
-    return response;
+    if (!response.success) {
+      console.warn('Failed to post payment:', response.error);
+      return null;
+    }
+    return response.data;
   }
 
-  _callApi(endPoint: string, method: string, parameters?: any): any {
+  _callApi(endPoint: string, method: string, parameters?: any): { success: boolean; data?: any; error?: string; statusCode?: number } {
     try {
       const response = this.serviceOauth.fetch(endPoint, { method: method, payload: parameters });
-      if (response.getResponseCode() !== 200) {
-        throw new Error(`API error: ${response.getResponseCode()}`);
+      const statusCode = response.getResponseCode();
+
+      if (statusCode !== 200) {
+        const errorMessage = `API error: ${statusCode}`;
+        console.error(`API call failed for ${endPoint}: ${errorMessage}`);
+        return { success: false, error: errorMessage, statusCode };
       }
-      return JSON.parse(response.getContentText());
+
+      const data = JSON.parse(response.getContentText());
+      return { success: true, data };
     } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown API error';
       console.error(`API call failed for ${endPoint}:`, error);
-      throw error;
+      return { success: false, error: errorMessage };
     }
   }
 }
