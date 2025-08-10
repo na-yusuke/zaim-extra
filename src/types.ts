@@ -119,4 +119,11 @@ interface PurchaseRecord {
   amount: string;
 }
 
-type MessageProcessor = (message: GoogleAppsScript.Gmail.GmailMessage) => void;
+interface ZaimContext {
+  api: ZaimApi;
+  rakutenPayId: string;
+}
+
+interface PlaceCategoryMapping {
+  [place: string]: { categoryId: string; genreId: string }
+}

@@ -57,20 +57,11 @@ function getPurchaseRecords(): PurchaseRecord[] {
   return purchaseRecords;
 }
 
-interface ZaimContext {
-  api: ZaimApi;
-  categoryList: CategoryListResponse;
-  genreList: GenreListResponse;
-  rakutenPayId: string;
-}
-
 function setupZaimContext(): ZaimContext | null {
   const zaimApi = new ZaimApi();
-  const categoryList = zaimApi.getCategoryList();
-  const genreList = zaimApi.getGenreList();
   const accountList = zaimApi.getAccountList();
 
-  if (!categoryList || !genreList || !accountList) {
+  if (!accountList) {
     console.error('Failed to retrieve Zaim data lists, canceling email processing');
     return null;
   }
@@ -81,18 +72,23 @@ function setupZaimContext(): ZaimContext | null {
     return null;
   }
 
-  return { api: zaimApi, categoryList, genreList, rakutenPayId };
+  return { api: zaimApi, rakutenPayId };
 }
 
 function registerPayments(purchaseRecords: PurchaseRecord[], context: ZaimContext): void {
+  // Create shop name's dict from existing records.
+  const placeCategoryDict = buildPlaceCategoryDictionary();
   for (const purchaseRecord of purchaseRecords) {
-    registerSinglePayment(purchaseRecord, context);
+    registerSinglePayment(purchaseRecord, context, placeCategoryDict);
   }
 }
 
-function registerSinglePayment(record: PurchaseRecord, context: ZaimContext): void {
+function registerSinglePayment(
+  record: PurchaseRecord,
+  context: ZaimContext,
+  placeCategoryDict: PlaceCategoryMapping): void {
   try {
-    const [categoryId, genreId] = getCategoryAndGenre(record.shopName, context.categoryList, context.genreList);
+    const [categoryId, genreId] = getCategoryAndGenre(record.shopName, placeCategoryDict);
     const result = context.api.postPayment(
       categoryId,
       genreId,

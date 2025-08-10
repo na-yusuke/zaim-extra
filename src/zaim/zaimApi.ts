@@ -83,6 +83,65 @@ class ZaimApi {
     return response.data;
   }
 
+  getMoneyList(parameters?: any): any | null {
+    const params: any = { mapping: 1 };
+    if (parameters) {
+      for (const key in parameters) {
+        if (parameters.hasOwnProperty(key)) {
+          params[key] = parameters[key];
+        }
+      }
+    }
+
+    const queryParts: string[] = [];
+    for (const key in params) {
+      if (params.hasOwnProperty(key) && params[key] !== undefined && params[key] !== null) {
+        queryParts.push(encodeURIComponent(key) + '=' + encodeURIComponent(String(params[key])));
+      }
+    }
+
+    const url = API_ENDPOINTS.MONEY + '?' + queryParts.join('&');
+    const response = this._callApi(url, 'get');
+    if (!response.success) {
+      console.warn('Failed to get money list:', response.error);
+      return null;
+    }
+    return response.data;
+  }
+
+  getAllPayments(): any[] {
+    const allPayments: any[] = [];
+    let page = 1;
+    const limit = 100;
+
+    while (true) {
+      console.log('Fetching page ' + page + '...');
+      const data = this.getMoneyList({
+        mode: 'payment',
+        limit: limit,
+        page: page,
+        order: 'date'
+      });
+
+      if (!data || !data.money || data.money.length === 0) {
+        break;
+      }
+
+      for (let i = 0; i < data.money.length; i++) {
+        allPayments.push(data.money[i]);
+      }
+
+      if (data.money.length < limit) {
+        break;
+      }
+
+      page++;
+    }
+
+    console.log('Total payments fetched: ' + allPayments.length);
+    return allPayments;
+  }
+
   _callApi(endPoint: string, method: string, parameters?: any): { success: boolean; data?: any; error?: string; statusCode?: number } {
     try {
       const response = this.serviceOauth.fetch(endPoint, { method: method, payload: parameters });
