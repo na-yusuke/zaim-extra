@@ -7,8 +7,9 @@ declare var OAuth1: any;
 
 function getServiceOauth1_(): any {
   try {
-    const clientId = getScriptProperty('ClientId');
-    const clientSecret = getScriptProperty('ClientSecret');
+    const manager = new ScriptPropertiesManager();
+    const clientId = manager.get('ClientId');
+    const clientSecret = manager.get('ClientSecret');
 
     if (!clientId || !clientSecret) {
       throw new Error('OAuth settings not found. Please run registerZaimApiKey() first.');

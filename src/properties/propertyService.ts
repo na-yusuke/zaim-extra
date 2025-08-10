@@ -1,55 +1,86 @@
 /**
- * Register constants to Script Properties
+ * Manages Google Apps Script Properties Service
  * https://developers.google.com/apps-script/reference/properties?hl=ja
  */
 
-// TODO: class化する
+class ScriptPropertiesManager {
+  private properties: GoogleAppsScript.Properties.Properties;
 
-// Manage Properties Service instance globally for efficiency
-const SCRIPT_PROPERTIES = PropertiesService.getScriptProperties();
+  constructor() {
+    this.properties = PropertiesService.getScriptProperties();
+  }
 
-function registerZaimApiKey(): void {
-  try {
+  get(key: string): string | null {
+    return this.properties.getProperty(key);
+  }
+
+  set(key: string, value: string): void {
+    this.properties.setProperty(key, value);
+  }
+
+  delete(key: string): void {
+    this.properties.deleteProperty(key);
+  }
+
+  setIfNotExists(key: string, value: string, logMessage?: string): boolean {
+    if (this.properties.getProperty(key) === null) {
+      if (logMessage) {
+        console.log(logMessage);
+      }
+      this.properties.setProperty(key, value);
+      return true;
+    }
+    return false;
+  }
+
+  exists(key: string): boolean {
+    return this.properties.getProperty(key) !== null;
+  }
+}
+
+class ZaimConfigService {
+  private propertiesManager: ScriptPropertiesManager;
+
+  constructor() {
+    this.propertiesManager = new ScriptPropertiesManager();
+  }
+
+  registerApiCredentials(): void {
+    try {
+      this.validateConfig();
+
+      this.propertiesManager.setIfNotExists(
+        'ClientId',
+        (OAUTH_CONFIG as any).CLIENT_ID,
+        'Register ClientId'
+      );
+
+      this.propertiesManager.setIfNotExists(
+        'ClientSecret',
+        (OAUTH_CONFIG as any).CLIENT_SECRET,
+        'Register ClientSecret'
+      );
+    } catch (error) {
+      console.error('Zaim config registration error:', error);
+      throw error;
+    }
+  }
+
+  private validateConfig(): void {
     if (typeof OAUTH_CONFIG === 'undefined') {
       throw new Error('config.ts not found. Please copy config.template.ts to config.ts and set appropriate values.');
     }
-
-    registerPropertyIfNotExists(
-      'ClientId',
-      (OAUTH_CONFIG as any).CLIENT_ID,
-      'Register ClientId'
-    );
-
-    registerPropertyIfNotExists(
-      'ClientSecret',
-      (OAUTH_CONFIG as any).CLIENT_SECRET,
-      'Register ClientSecret'
-    );
-  } catch (error) {
-    console.error('Property registration error:', error);
-    throw error;
   }
-}
 
-function registerPropertyIfNotExists(
-  key: string,
-  value: string,
-  logMessage: string
-): void {
-  if (SCRIPT_PROPERTIES.getProperty(key) === null) {
-    console.log(logMessage);
-    SCRIPT_PROPERTIES.setProperty(key, value);
+  getClientId(): string | null {
+    return this.propertiesManager.get('ClientId');
   }
-}
 
-function getScriptProperty(key: string): string | null {
-  return SCRIPT_PROPERTIES.getProperty(key);
-}
+  getClientSecret(): string | null {
+    return this.propertiesManager.get('ClientSecret');
+  }
 
-function setScriptProperty(key: string, value: string): void {
-  SCRIPT_PROPERTIES.setProperty(key, value);
-}
-
-function deleteScriptProperty(key: string): void {
-  SCRIPT_PROPERTIES.deleteProperty(key);
+  hasCredentials(): boolean {
+    return this.propertiesManager.exists('ClientId') && this.propertiesManager.exists('ClientSecret');
+  }
 }

@@ -14,7 +14,8 @@ function main(): void {
 
 function authZaimApplication(): boolean {
   try {
-    registerZaimApiKey();
+    const zaimConfig = new ZaimConfigService();
+    zaimConfig.registerApiCredentials();
     const zaimApi = new ZaimApi();
     const authResult = zaimApi.doZaimAuth();
 
@@ -48,11 +49,11 @@ function processRakutenPayEmails(): void {
 function getPurchaseRecords(): PurchaseRecord[] {
   const rakutenPayEmailProcessor = new RakutenPayEmailProcessor();
   const purchaseRecords = rakutenPayEmailProcessor.getPurchaseRecords();
-  
+
   if (purchaseRecords.length === 0) {
     console.log('Cannot find new purchase records.');
   }
-  
+
   return purchaseRecords;
 }
 
