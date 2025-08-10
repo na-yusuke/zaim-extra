@@ -150,7 +150,6 @@ function getLatestSpreadsheetFromFolder(folderName: string): GoogleAppsScript.Sp
 
     console.log('No dated spreadsheet found');
     return null;
-
   } catch (error) {
     console.error('Error retrieving latest spreadsheet:', error);
     return null;

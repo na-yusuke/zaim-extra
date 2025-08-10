@@ -27,7 +27,7 @@ class ZaimApi {
   }
 
   getCategoryList(): CategoryListResponse | null {
-    const response = this._callApi(API_ENDPOINTS.CATEGORY, 'get');
+    const response = this.callApi(API_ENDPOINTS.CATEGORY, 'get');
     if (!response.success) {
       console.warn('Failed to get category list:', response.error);
       return null;
@@ -36,7 +36,7 @@ class ZaimApi {
   }
 
   getGenreList(): GenreListResponse | null {
-    const response = this._callApi(API_ENDPOINTS.GENRE, 'get');
+    const response = this.callApi(API_ENDPOINTS.GENRE, 'get');
     if (!response.success) {
       console.warn('Failed to get genre list:', response.error);
       return null;
@@ -45,7 +45,7 @@ class ZaimApi {
   }
 
   getAccountList(): AccountListResponse | null {
-    const response = this._callApi(API_ENDPOINTS.ACCOUNT, 'get');
+    const response = this.callApi(API_ENDPOINTS.ACCOUNT, 'get');
     if (!response.success) {
       console.warn('Failed to get account list:', response.error);
       return null;
@@ -75,7 +75,7 @@ class ZaimApi {
       name: name,
     };
 
-    const response = this._callApi(API_ENDPOINTS.PAYMENT, 'post', parameters);
+    const response = this.callApi(API_ENDPOINTS.PAYMENT, 'post', parameters);
     if (!response.success) {
       console.warn('Failed to post payment:', response.error);
       return null;
@@ -101,7 +101,7 @@ class ZaimApi {
     }
 
     const url = API_ENDPOINTS.MONEY + '?' + queryParts.join('&');
-    const response = this._callApi(url, 'get');
+    const response = this.callApi(url, 'get');
     if (!response.success) {
       console.warn('Failed to get money list:', response.error);
       return null;
@@ -142,7 +142,7 @@ class ZaimApi {
     return allPayments;
   }
 
-  _callApi(endPoint: string, method: string, parameters?: any): { success: boolean; data?: any; error?: string; statusCode?: number } {
+  private callApi(endPoint: string, method: string, parameters?: any): { success: boolean; data?: any; error?: string; statusCode?: number } {
     try {
       const response = this.serviceOauth.fetch(endPoint, { method: method, payload: parameters });
       const statusCode = response.getResponseCode();
