@@ -56,7 +56,7 @@ function exportRakutenPayDataToSheet() {
   let spreadsheet;
   try {
     // Specify folder name (change as needed)
-    const folderName = 'zaim_支払いデータ';
+    const folderName = 'zaim_record';
     let folder;
 
     // Check if folder exists
@@ -71,7 +71,7 @@ function exportRakutenPayDataToSheet() {
     }
 
     // Create spreadsheet in specified folder
-    const fileName = '楽天Pay支払いデータ_' + new Date().toISOString().split('T')[0];
+    const fileName = 'RakutenPayRecord_' + new Date().toISOString().split('T')[0];
     spreadsheet = SpreadsheetApp.create(fileName);
 
     // Move spreadsheet to specified folder

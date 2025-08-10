@@ -36,7 +36,7 @@ function getCategoryAndGenre(
  */
 function buildPlaceCategoryDictionary(): PlaceCategoryMapping {
   try {
-    const folderName = 'zaim_支払いデータ';
+    const folderName = 'zaim_record';
     const latestSpreadsheet = getLatestSpreadsheetFromFolder(folderName);
     if (!latestSpreadsheet) {
       console.log('Historical spreadsheet not found. Using existing logic.');
@@ -104,7 +104,7 @@ function buildPlaceCategoryDictionary(): PlaceCategoryMapping {
  * @returns The latest spreadsheet object or null if none found
  * 
  * @remarks
- * - Expected filename format: "楽天Pay支払いデータ_YYYY-MM-DD"
+ * - Expected filename format: "RakutenPayRecord_YYYY-MM-DD"
  * - Only processes Google Sheets files (ignores other file types)
  * - Returns null if folder doesn't exist or contains no valid spreadsheets
  * - Uses string comparison for date sorting (YYYY-MM-DD format ensures correct ordering)
@@ -132,7 +132,7 @@ function getLatestSpreadsheetFromFolder(folderName: string): GoogleAppsScript.Sp
         continue;
       }
 
-      // Extract date from filename (expected format: 楽天Pay支払いデータ_YYYY-MM-DD)
+      // Extract date from filename (expected format: RakutenPayRecord_YYYY-MM-DD)
       const dateMatch = fileName.match(/(\d{4}-\d{2}-\d{2})/);
       if (dateMatch && dateMatch[1]) {
         const fileDate = dateMatch[1];
